@@ -55,6 +55,7 @@ explore: order_items {
   }
 }
 
+explore: User_Sales_info {}
 explore: orders {
   join: users {
     type: left_outer
@@ -62,19 +63,3 @@ explore: orders {
     relationship: many_to_one
   }
 }
-
-explore: products {}
-
-explore: schema_migrations {}
-
-explore: user_data {
-  join: users {
-    type: left_outer
-    sql_on: ${user_data.user_id} = ${users.id} ;;
-    relationship: many_to_one
-  }
-}
-
-explore: users {}
-
-explore: users_nn {}
