@@ -3,11 +3,13 @@ view: User_Sales_info{
     sql: SELECT
         ord.user_id AS User_info,
         COUNT(*) AS Total_OID,
-        ROUND(AVG(oitems.sale_price) as Avg_Sales_Price,
-        ROUND(SUM(oitems.sale_price) as Total_Sales_Price
+        oitems.sale_price AS SALES,
+        AVG(oitems.sale_price) as Avg_Sales_Price,
+        SUM(oitems.sale_price) as Total_Sales_Price
       FROM order_items AS oitems
       LEFT JOIN orders AS ord
       ON oitems.order_id = ord.id
+
       GROUP BY user_id
        ;;
     indexes: ["User_info"]
@@ -17,12 +19,16 @@ view: User_Sales_info{
   dimension: User_info {
    # primary_key: yes
     #hidden: yes
-    sql: ${TABLE}.user_id ;;
+    sql: ${TABLE}.User_info ;;
   }
 
+dimension: SALES {
+  type:  number
+  sql: ${TABLE}.SALES ;;
+}
   dimension: Total_OID {
     type: number
-    sql: ${TABLE}.lifetime_items ;;
+    sql: ${TABLE}.Total_OID ;;
   }
 
   dimension: lifetime_items_tiered {
@@ -47,5 +53,10 @@ view: User_Sales_info{
     type: tier
     tiers: [0, 5, 10, 15, 20, 25, 50, 100, 250, 500, 1000]
     sql: ${Total_Sales_Price} ;;
+  }
+  measure: AVG_SALES {
+    type: sum
+    sql: ${SALES} ;;
+    value_format_name: decimal_2
   }
 }
